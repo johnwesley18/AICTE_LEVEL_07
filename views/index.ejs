@@ -1,54 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width,initial-scale=1.0">
-        <meta name="csrf-token" content="<%= csrfToken %>">
-        <link href="./css/style.css" rel="stylesheet">
-        <title>John Wesley Todo Manager</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link href="./css/style.css" rel="stylesheet">
-        <script>
-          const token = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-          const updateTodo = (id) => {
-          const bool = document.querySelector(`#checkbox-${id}`).checked
-          console.log(bool);
-          fetch(`/todos/${id}`, {
-            method: "PUT",
-            headers: {
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="csrf-token" content="<%= csrfToken %>"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-Do</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      const token = document.querySelector("meta[name='csrf-token']").getAttribute("content")
+      const updateTodo = (id) => {
+        const bool = document.querySelector(`#checkbox-${id}`).checked
+        console.log(bool);
+        fetch(`/todos/${id}`, {
+          method: "PUT",
+          headers: {
             "Content-Type": "application/json",
-            },
-            body : JSON.stringify({
+          },
+          body : JSON.stringify({
             _csrf : token,
             completed : bool
-            })
           })
+        })
           .then((res) => {
             if (res.ok) {
               window.location.reload();
             }
           })
-          .catch(err);{
+          .catch(err);
+        {
           console.log(err);
-          }
-        };
-            function deleteTodo(id) {
-        fetch(`/todos/${id}`,{
-          method: "delete",
-          headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({
-            "_csrf":token
+        }
+      };
+      const deleteTodo = (id) => {
+        fetch(`/todos/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body : JSON.stringify({
+            _csrf : token
           })
         })
-         .then((res) => {
-          if (res.ok) {
-            window.location.reload();
-          }
-         })
-         .catch((err) => console.erroe(err));
-      }
-        </script>
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            }
+          })
+          .catch(err);
+        {
+          console.log(err);
+        }
+      };
+    </script>
     </head>
     <body>
        <div class= "grid  grid-cols-6">
