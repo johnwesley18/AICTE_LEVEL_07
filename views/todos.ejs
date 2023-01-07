@@ -10,7 +10,7 @@
       >
         <input type="checkbox" name="" id="checkbox-<%= data[i].id %>"
         class="w-4 h-4 bg-gray-100 text-blue-100"
-        onclick="updateTodo(<%=data[i].id%>)" required <%= data[i].completed ?
+        onclick="updateTodo(<%=data[i].id%>,<%= !data[i].completed %>)" required <%= data[i].completed ?
         "checked" : "" %> />
         <label
           for="checkbox-<%= data[i].id %>"

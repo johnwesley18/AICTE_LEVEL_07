@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       const token = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-      const updateTodo = (id) => {
+      const updateTodo = (id,status) => {
         const bool = document.querySelector(`#checkbox-${id}`).checked
         console.log(bool);
         fetch(`/todos/${id}`, {
@@ -19,7 +19,7 @@
           },
           body : JSON.stringify({
             _csrf : token,
-            completed : bool
+            completed : status
           })
         })
           .then((res) => {

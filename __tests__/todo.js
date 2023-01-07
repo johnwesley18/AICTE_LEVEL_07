@@ -19,7 +19,7 @@ describe("Todo test suite ", () => {
     await db.sequelize.close();
     server.close();
   });
-  test("responds with json at /todos", async () => {
+  test("creating a new todo test /todos", async () => {
     const res = await agent.get("/");
     const csrfToken = extractCsrfToken(res);
     const response = await agent.post("/todos").send({
@@ -30,7 +30,35 @@ describe("Todo test suite ", () => {
     });
     expect(response.statusCode).toBe(302); //http status code
   });
-  test("mark as complete", async () => {
+  test("mark a todo as complete", async () => {
+    let res = await agent.get("/");
+    let csrfToken = extractCsrfToken(res);
+    await agent.post("/todos").send({
+      title: "buy milk",
+      dueDate: new Date().toISOString(),
+      completed: true,
+      _csrf: csrfToken,
+    });
+    const groupedTodosResponse = await agent
+      .get("/")
+      .set("Accept", "application/json");
+
+    const parsedGroupedResponse = JSON.parse(groupedTodosResponse.text);
+    const dueTodayCount = parsedGroupedResponse.dueToday.length;
+    const newTodo = parsedGroupedResponse.dueToday[dueTodayCount - 1];
+
+    res = await agent.get("/");
+    csrfToken = extractCsrfToken(res);
+
+    const markCompleteResponse = await agent.put(`/todos/${newTodo.id}`).send({
+      _csrf: csrfToken,
+      completed: false,
+    });
+    const parsedUpdateResponse = JSON.parse(markCompleteResponse.text);
+    expect(parsedUpdateResponse.completed).toBe(false);
+  });
+
+  test("mark a todo as incomplete", async () => {
     let res = await agent.get("/");
     let csrfToken = extractCsrfToken(res);
     await agent.post("/todos").send({
@@ -52,10 +80,13 @@ describe("Todo test suite ", () => {
 
     const markCompleteResponse = await agent.put(`/todos/${newTodo.id}`).send({
       _csrf: csrfToken,
+      completed: false,
     });
     const parsedUpdateResponse = JSON.parse(markCompleteResponse.text);
     expect(parsedUpdateResponse.completed).toBe(false);
   });
+
+
   test("Deleting todo test", async () => {
     let res = await agent.get("/");
     let csrfToken = extractCsrfToken(res);
