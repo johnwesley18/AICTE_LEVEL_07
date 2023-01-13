@@ -36,7 +36,7 @@ describe("Todo test suite ", () => {
     await agent.post("/todos").send({
       title: "buy milk",
       dueDate: new Date().toISOString(),
-      completed: true,
+      completed: false,
       _csrf: csrfToken,
     });
     const groupedTodosResponse = await agent
@@ -52,10 +52,10 @@ describe("Todo test suite ", () => {
 
     const markCompleteResponse = await agent.put(`/todos/${newTodo.id}`).send({
       _csrf: csrfToken,
-      completed: false,
+      completed: true,
     });
     const parsedUpdateResponse = JSON.parse(markCompleteResponse.text);
-    expect(parsedUpdateResponse.completed).toBe(false);
+    expect(parsedUpdateResponse.completed).toBe(true);
   });
 
   test("mark a todo as incomplete", async () => {
@@ -64,7 +64,7 @@ describe("Todo test suite ", () => {
     await agent.post("/todos").send({
       title: "buy milk",
       dueDate: new Date().toISOString(),
-      completed: false,
+      completed: true,
       _csrf: csrfToken,
     });
     const groupedTodosResponse = await agent
